@@ -110,7 +110,7 @@ canvas.height = 500;
 var keys = [];
 
 
-
+var collisionBoxes = [];
 var x =400,y = 480;
 var plateX = 325,plateY = 490;
 var flagX =5, flagY =5;
@@ -128,12 +128,13 @@ function move(){
   }
   x = x+flagX;
   y = y+flagY;
-  if(x ==790 || x==10 ){
+  if(x ==790 || x==10  ){
     flagX = -flagX;
   }
 
-  if(y ==490 || y==10){
+  if(y ==490 || y==10 || (y==20)){
     flagY = -flagY;
+    
   }
 
   if(keys[39] && plateX<650){
@@ -159,7 +160,8 @@ function move(){
 
   ctx.fillStyle = 'lightBlue';
   // ctx.fillRect(20,20,100,20);
-  createBlock(800, 250);
+  getBoxXPos(x,800,y,250)
+  createBlock(800, 250, collisionBoxes);
 
   ctx.beginPath();
   ctx.arc(x, y, 10, 0, Math.PI * 2);
@@ -169,16 +171,66 @@ function move(){
 
 }
 
-function createBlock(maxX,maxY){
+function createBlock(maxX,maxY,noRenderXY){
   for(var i=1;120*i<=maxX-20 ;i++){
     for(var j=1; 40*j<= maxY-20;j++){
-      ctx.fillRect((i-1)*120+20,(j-1)*50+20,100,20)
+      ctx.fillRect((i-1)*120+50,(j-1)*50+30,80,20);
+
+      // console.log(i,j)
     }
   }
+  for(var k = 0;k<noRenderXY.length;k++){
+    ctx.clearRect((noRenderXY[k][0]-1)*120+50,(noRenderXY[k][1]-1)*50+30,80,20);
+  }
+
 
 }
 
 move();
+
+function isItemInArray(array, item) {
+  for (var i = 0; i < array.length; i++) {
+      // This if statement depends on the format of your array
+      if (array[i][0] == item[0] && array[i][1] == item[1]) {
+          return true;   // Found it
+      }
+  }
+  return false;   // Not found
+}
+
+function getBoxXPos(x,maxX,y,maxY){
+  for(var i=1;120*i<maxX-20;i++){
+    for(var j=1;40*j<= maxY-20;j++){
+      if(!isItemInArray(collisionBoxes,[i,j])){
+        if((y ==j*50-30 || y==j*50+10) && x<= (i-1)*120+130 && x>=(i-1)*120+50){
+
+       
+          if(y ==j*50-30){
+            flagY = -5
+          }
+          if(y==j*50+10){
+            flagY = 5
+          }
+          
+          collisionBoxes.push([i,j])
+          break;
+        }
+      }
+    }
+  //  if(x<= (i-1)*120+130 && x>=(i-1)*120+50){
+  //    console.log(i );
+  //    break; 
+  //  }
+  // }
+  }
+  collisionBoxes = collisionBoxes.filter((x, i, a) => a.indexOf(x) == i)
+//   collisionBoxes = collisionBoxes.filter(function(item, pos) {
+//     return collisionBoxes.indexOf(item) == pos;
+// })
+// console.log(...new Set(collisionBoxes));
+
+  
+}
 
 var pause = false;
 
