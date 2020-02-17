@@ -132,7 +132,7 @@ function move(){
     flagX = -flagX;
   }
 
-  if(y ==490 || y==10 || (y==20)){
+  if(y ==490 || y==10 ){
     flagY = -flagY;
     
   }
