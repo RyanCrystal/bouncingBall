@@ -28,7 +28,7 @@
     height: 20px;
     width: 20px;
     border-radius: 50%;
-    background-color: #1e20a7;
+    background-color: rgb(203, 204, 214);
     position: absolute;
     left: calc(50% - 10px);
     bottom: 10px;

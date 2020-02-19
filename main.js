@@ -1,106 +1,3 @@
-// function init(){
-//     var ball = document.getElementById('ball');
-//     var top = ball.getBoundingClientRect().top;
-//     // ball.style.top = '200px';
-//     console.log(top)
-// // };
-// for(let i=0;i<100;i++){
-//     setTimeout(function(){
-//         // console.log(0.5*i*i*9.8);
-//         ball.style.top = (0.5*i*i*1.8*0.1) + 'px';
-//         console.log(ball.style.top)
-//     },1*i)
-// }
-
-// function getStyle(oElm, strCssRule){
-// 	var strValue = "";
-// 	if(document.defaultView && document.defaultView.getComputedStyle){
-// 		strValue = document.defaultView.getComputedStyle(oElm, "").getPropertyValue(strCssRule);
-// 	}
-// 	else if(oElm.currentStyle){
-// 		strCssRule = strCssRule.replace(/\-(\w)/g, function (strMatch, p1){
-// 			return p1.toUpperCase();
-// 		});
-// 		strValue = oElm.currentStyle[strCssRule];
-// 	}
-// 	return strValue;
-// }
-
-// var plate = document.querySelector('.plate');
-// var left =parseInt(getStyle(plate,'left').slice(0,-2));
-
-// function movePlate(e){
-//     console.log(e);
-
-//     // console.log(i)
-//     // return function(e){
-//         if(e.keyCode == 37){
-//             left -=20;
-//             plate.style.left = left +'px';
-//             console.log( left);
-//         }else if(e.keyCode == 39){
-//             left +=20;
-//             plate.style.left = left +'px';
-//             // plate.style.left = plate.style.left + 1 +'px';
-//             console.log( plate.style.left);
-    
-//         }
-//     // }
-// }
-
-// // document.addEventListener('keydown',movePlate);
-
-// var tickRate = 5,
-//     keyDown = {},
-//     keyMap = {
-//         37: 'left',
-//         38: 'up',
-//         39: 'right',
-//         40: 'down'
-//     };
-
-//     document.addEventListener('keyup',function(e){ 
-//         console.log(e)
-//           keyDown[keyMap[e.which]] = false;
-//         } )
-//     document.addEventListener('keydown',function(e){   
-//         keyDown[keyMap[e.which]] = true; 
-//     })
-
-// function moveLeft(){
-//     left-5<0? 0:left -=5;
-//     if(left<650 && left>=0)
-//     plate.style.left = left +'px';
-// }
-// function moveRight(){
-//     left+5>800?left=650:left+=5;
-//     if(left<=650 && left>0)
-//     plate.style.left = left +'px';
-// }
-
-// var tick = function() {
-//   if        (keyDown['up']) {
-//     // up code
-//     console.log('up')
-
-//   } else if (keyDown['down']) {
-//     // movePlate();
-//     console.log('down')
-//   } else if (keyDown['left']) {
-//     // left code
-//     moveLeft()
-//   } else if (keyDown['right']) {
-//     // right code
-//     moveRight()
-
-//   }
-
-//   // other code
-
-//   setTimeout(tick, tickRate);
-// };
-
-// tick();
 
 var canvas = document.getElementById('canvas'),
     ctx = canvas.getContext('2d');
@@ -108,23 +5,37 @@ var canvas = document.getElementById('canvas'),
 canvas.width = 800;
 canvas.height = 500;
 var keys = [];
-
+var score = 0;
 
 var collisionBoxes = [];
 var x =400,y = 480;
-var plateX = 325,plateY = 490;
+var plateX = 350,plateY = 490;
 var flagX =5, flagY =5;
+var pause = false;
+
 function move(){
   requestAnimationFrame(move);
 
   if(pause || keys[32]){
+    ctx.fillStyle = 'rgba(255, 255, 255,0.1)';
+    ctx.fillRect(0,0,800,500);
+    ctx.font = '25px serif';
+    if(score<30){
+      // ctx.clearRect(0, 0, 800, 500);
+
+      ctx.fillStyle = '#000000';
+      ctx.fillText('Press space to resume', 320, 220);
+    }
+    else{
+      // success();
+      ctx.fillStyle = 'green';
+      ctx.fillText('Congratulations! You have won!', 270, 220);
+    }
     return
   }
   ctx.clearRect(0, 0, 800, 500);
   if(keys[37] ){
     plateX-=10;
-    // plateY--;
-    // console.log(x,y)
   }
   x = x+flagX;
   y = y+flagY;
@@ -137,26 +48,28 @@ function move(){
     
   }
 
-  if(keys[39] && plateX<650){
+  if(keys[39] && plateX<700){
     plateX+=10
   }
-  if(plateX>650){
-    plateX =650;
+  if(plateX>700){
+    plateX =700;
   }else if(plateX<0){
     plateX =0;
   }
 
-  if(y==490 && (x<plateX || x>plateX+150)){
-    console.log('miss')
+  if(y==490 && (x<plateX || x>plateX+100)){
+    // console.log('miss')
+    collisionBoxes = [];
+    score = 0
   }
 
-  if(y==480 && (x>plateX && x<plateX+150)){
+  if(y==480 && (x>plateX && x<plateX+100)){
     flagY = -5;
-    console.log('hit')
+    // console.log('hit')
   }
   // ctx.fillRect(325,490,150,10);
   ctx.fillStyle = '#6f4e37';
-  ctx.fillRect(plateX,plateY,150,10);
+  ctx.fillRect(plateX,plateY,100,10);
 
   ctx.fillStyle = 'lightBlue';
   // ctx.fillRect(20,20,100,20);
@@ -166,8 +79,14 @@ function move(){
   ctx.beginPath();
   ctx.arc(x, y, 10, 0, Math.PI * 2);
   ctx.fillStyle = 'red';
-
   ctx.fill();
+
+  ctx.font = '25px serif';
+  ctx.fillStyle = 'blue';
+  ctx.fillText(score, 765, 25);
+  ctx.fillStyle = '#000000';
+  ctx.font = '28px serif';
+  ctx.fillText('score:', 690, 24);
 
 }
 
@@ -175,15 +94,11 @@ function createBlock(maxX,maxY,noRenderXY){
   for(var i=1;120*i<=maxX-20 ;i++){
     for(var j=1; 40*j<= maxY-20;j++){
       ctx.fillRect((i-1)*120+50,(j-1)*50+30,80,20);
-
-      // console.log(i,j)
     }
   }
   for(var k = 0;k<noRenderXY.length;k++){
     ctx.clearRect((noRenderXY[k][0]-1)*120+50,(noRenderXY[k][1]-1)*50+30,80,20);
   }
-
-
 }
 
 move();
@@ -202,9 +117,12 @@ function getBoxXPos(x,maxX,y,maxY){
   for(var i=1;120*i<maxX-20;i++){
     for(var j=1;40*j<= maxY-20;j++){
       if(!isItemInArray(collisionBoxes,[i,j])){
-        if((y ==j*50-30 || y==j*50+10) && x<= (i-1)*120+130 && x>=(i-1)*120+50){
-
-       
+        if((y ==j*50-30 || y==j*50+10) && x<= (i-1)*120+130+10 && x>=(i-1)*120+50-10){
+          score++;
+          if(score == 30){
+            pause = true;
+          }
+          // console.log(score)
           if(y ==j*50-30){
             flagY = -5
           }
@@ -217,22 +135,12 @@ function getBoxXPos(x,maxX,y,maxY){
         }
       }
     }
-  //  if(x<= (i-1)*120+130 && x>=(i-1)*120+50){
-  //    console.log(i );
-  //    break; 
-  //  }
-  // }
+
   }
   collisionBoxes = collisionBoxes.filter((x, i, a) => a.indexOf(x) == i)
-//   collisionBoxes = collisionBoxes.filter(function(item, pos) {
-//     return collisionBoxes.indexOf(item) == pos;
-// })
-// console.log(...new Set(collisionBoxes));
-
-  
+ 
 }
 
-var pause = false;
 
 document.body.addEventListener("keydown", function (e) {
   if(e.keyCode == 32)
