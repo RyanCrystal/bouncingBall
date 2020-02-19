@@ -1,4 +1,9 @@
 #canvas{
+    margin: 0 auto;
     border: 1px solid #631616;
-    text-align: center;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
 }
